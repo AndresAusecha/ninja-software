@@ -204,4 +204,4 @@ curl -X GET \
 No se consideró necesario crear un campo para días abarcados en turnos, ya que complicaba el diseño
 y se podía sacar con una consulta. Se aplicaron validaciones no expresadas pero obvias como validar fechas 
 y horas, campos obligatorios, turnos de trabajo no pueden tener ser fechas pasadas, fecha/hora fin de turno debe ser superior
-a fecha/inicio.  
+a fecha/hora inicio.  
