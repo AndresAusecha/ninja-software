@@ -142,7 +142,15 @@ curl -X DELETE \
   -H 'Postman-Token: 4af1d251-e3cb-43b0-b594-a025d19d5f4a' \
   -H 'cache-control: no-cache'
 ```
- 
+
+#### Asignar un turno a un empleado
+```
+curl -X PUT \
+  http://localhost:8080/logica-negocio/empleado/asignar-turno-a-empleado/id-empleado/4/id-turno/9 \
+  -H 'Postman-Token: 3c72e315-187d-4cf3-857a-f1fb650e6546' \
+  -H 'cache-control: no-cache'
+```
+
 ### Listados,busquedas y filtros
 #### Empleados
 * por numero de identificacion
