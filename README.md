@@ -27,7 +27,30 @@ Operaciones sobre entidad turnos básicas crear, actualizar, eliminar, leer
  hora fin específica.
   
 ## Instrucciones de instalacion
+* nota: La implementación se realizó con mysql 8
+* crear esquema
 ```
+CREATE SCHEMA `prueba-ninja-software`;
 ```
+* poner ese nombre de esquema en application.properties
+* poner usuario y contraseña
+* poner host, puerto y esquema en application.properties
+* por defecto se eliminan tablas y vuelen a crear, para no borrar datos de prueba se puede reemplazar "drop-create" por "validate"
+
+Ejemplo:
+```
+spring.output.ansi.enabled=ALWAYS
+spring.application.name=Prueba-ninja-software
+
+# Tomcat Server configuration
+server.port=8080
+
+spring.datasource.url=jdbc:mysql://localhost:3306/prueba-ninja-software?serverTimezone=America/Bogota
+spring.datasource.username=root
+spring.datasource.password=root
+spring.jpa.hibernate.ddl-auto=drop-create
+spring.jpa.show-sql=true
+```
+
 
 ## Instrucciones de uso
