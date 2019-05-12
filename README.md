@@ -11,7 +11,7 @@ Tabla of contenidos
 
 ## Arquitectura
  Se empleó arquitectura tipo cebolla con el objetivo de desacoplar el código, hacerlo menos dependiente y respetar la 
- separación de tareas, en tres capas; modelo del dominio, servicios del dominio, servicios de aplicación y externa 
+ separación de tareas; modelo del dominio, servicios del dominio, servicios de aplicación y externa 
  
 ## Casos de uso
 
@@ -35,7 +35,7 @@ CREATE SCHEMA `prueba-ninja-software`;
 * poner ese nombre de esquema en application.properties
 * poner host, puerto y esquema en application.properties
 * poner usuario y contraseña
-* por defecto se eliminan tablas y vuelen a crear, para no borrar datos de prueba se puede reemplazar "drop-create" por "validate"
+* por defecto se eliminan tablas y vuelen a crear, para no borrar datos de prueba se puede reemplazar "create-drop" por "validate"
 
 Ejemplo:
 ```
@@ -48,7 +48,7 @@ server.port=8080
 spring.datasource.url=jdbc:mysql://localhost:3306/prueba-ninja-software?serverTimezone=America/Bogota
 spring.datasource.username=root
 spring.datasource.password=root
-spring.jpa.hibernate.ddl-auto=drop-create
+spring.jpa.hibernate.ddl-auto=create-drop
 spring.jpa.show-sql=true
 ```
 
@@ -72,7 +72,7 @@ curl -X POST \
 #### Actualizar
 ```
 curl -X PUT \
-  http://localhost:8080/logica-negocio/empleado/actualizar/3 \
+  http://localhost:8080/logica-negocio/empleado/actualizar/1 \
   -H 'Content-Type: application/json' \
   -H 'Postman-Token: 62a73363-c2e5-4589-be9e-dc83df0171e7' \
   -H 'cache-control: no-cache' \
@@ -98,5 +98,96 @@ curl -X DELETE \
   -H 'Postman-Token: dc35c3e3-4b62-452e-8ae7-6cf04cb7ac18' \
   -H 'cache-control: no-cache'
 ```
+
+### Turnos de trabajo
+#### Crear
+curl -X POST \
+```
+  http://localhost:8080/logica-negocio/turno/crear \
+  -H 'Content-Type: application/json' \
+  -H 'Postman-Token: 10cf6921-02bf-47ec-9c8c-c76404996b59' \
+  -H 'cache-control: no-cache' \
+  -d '{
+	"fechaInicio": "2019-05-13",
+	"fechaFin": "2019-05-15",
+	"horaInicio": "07:30:00",
+	"horaFin": "17:30:00"
+}'
+```
+#### Actualizar
+```
+curl -X PUT \
+  http://localhost:8080/logica-negocio/turno/actualizar/1 \
+  -H 'Content-Type: application/json' \
+  -H 'Postman-Token: aa19d2b4-3432-42ab-896a-296cf7942bfd' \
+  -H 'cache-control: no-cache' \
+  -d '{
+	"fechaInicio": "2019-05-20",
+	"fechaFin": "2019-05-24",
+	"horaInicio": "08:30:30",
+	"horaFin": "18:30:30"
+}'
+```
+#### Leer
+```
+curl -X GET \
+  http://localhost:8080/logica-negocio/turno/leer/1 \
+  -H 'Postman-Token: 85a70778-7508-47bc-b308-bd63e0ef50d6' \
+  -H 'cache-control: no-cache'
+```
+#### Eliminar
+```
+curl -X DELETE \
+  http://localhost:8080/logica-negocio/turno/eliminar/1 \
+  -H 'Postman-Token: 4af1d251-e3cb-43b0-b594-a025d19d5f4a' \
+  -H 'cache-control: no-cache'
+```
  
- 
+### Listados,busquedas y filtros
+#### Empleados
+* por numero de identificacion
+```
+curl -X GET \
+  http://localhost:8080/logica-negocio/empleado/buscar/idEmpleado/1017181249 \
+  -H 'Postman-Token: 25105ec9-b7a9-4b1e-9e37-e408d2fd6bcf' \
+  -H 'cache-control: no-cache' 
+```
+* listar ordenando alfabéticamente por apellido
+```
+curl -X GET \
+  http://localhost:8080/logica-negocio/empleado/listar-ordenando-x-apellido \
+  -H 'Postman-Token: fe9706bd-723a-4263-b911-6e74a8f81c85' \
+  -H 'cache-control: no-cache'
+```
+#### Turnos
+* filtrar por fecha
+```
+curl -X GET \
+  http://localhost:8080/logica-negocio/turno/filtrar/fecha/2019-05-22 \
+  -H 'Postman-Token: 1db0e8cc-e42c-44b6-84dd-99acc58f7239' \
+  -H 'cache-control: no-cache'
+```
+
+* filtrar por hora
+```
+curl -X GET \
+  http://localhost:8080/logica-negocio/turno/filtrar/hora/12:00:00 \
+  -H 'Postman-Token: 464c1937-c7c8-4280-89e5-d95783d2ff0b' \
+  -H 'cache-control: no-cache'
+```
+
+* filtrar turnos con hora inicio cercana a enviada(menos de 60 mins)
+```
+curl -X GET \
+  http://localhost:8080/logica-negocio/turno/filtrar/horaInicio/08:00:00 \
+  -H 'Postman-Token: bcac5353-7dc9-4e12-bca0-8ab6b57f06e1' \
+  -H 'cache-control: no-cache'
+```
+
+* filtrar turnos con hora fin cercana a enviada(menos de 60 mins)
+```
+curl -X GET \
+  http://localhost:8080/logica-negocio/turno/filtrar/horaFin/18:00:00 \
+  -H 'Postman-Token: a5a26c6e-c5e1-4c88-bf38-2f522dc3e19e' \
+  -H 'cache-control: no-cache'
+```
