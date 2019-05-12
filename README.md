@@ -199,3 +199,9 @@ curl -X GET \
   -H 'Postman-Token: a5a26c6e-c5e1-4c88-bf38-2f522dc3e19e' \
   -H 'cache-control: no-cache'
 ```
+
+## Consideraciones finales
+No se consideró necesario crear un campo para días abarcados en turnos, ya que complicaba el diseño
+y se podía sacar con una consulta. Se aplicaron validaciones no expresadas pero obvias como validar fechas 
+y horas, campos obligatorios, turnos de trabajo no pueden tener ser fechas pasadas, fecha/hora fin de turno debe ser superior
+a fecha/inicio.  
