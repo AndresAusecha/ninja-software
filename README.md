@@ -91,7 +91,7 @@ curl -X GET \
   -H 'cache-control: no-cache'
 ```
 
-### Eliminar
+#### Eliminar
 ```
 curl -X DELETE \
   http://localhost:8080/logica-negocio/empleado/eliminar/1 \
