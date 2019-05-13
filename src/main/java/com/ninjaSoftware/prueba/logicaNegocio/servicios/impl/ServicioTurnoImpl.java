@@ -28,49 +28,62 @@ public class ServicioTurnoImpl implements ServicioTurno {
 
     @Override
     public ResponseEntity insertar(NuevoTurno nuevoTurno) {
-        Date fechaInicio = Date.valueOf(nuevoTurno.getFechaInicio());
-        Date fechaFin = Date.valueOf(nuevoTurno.getFechaFin());
-        Time horaInicio = Time.valueOf(nuevoTurno.getHoraInicio());
-        Time horaFin = Time.valueOf(nuevoTurno.getHoraFin());
-        if(fechaInicio.before(fechaActual) || fechaFin.before(fechaInicio) || horaFin.before(horaInicio)){
+        try {
+            Date fechaInicio = Date.valueOf(nuevoTurno.getFechaInicio());
+            Date fechaFin = Date.valueOf(nuevoTurno.getFechaFin());
+            Time horaInicio = Time.valueOf(nuevoTurno.getHoraInicio());
+            Time horaFin = Time.valueOf(nuevoTurno.getHoraFin());
+            if (fechaInicio.before(fechaActual) || fechaFin.before(fechaInicio) || horaFin.before(horaInicio)) {
+                return new ResponseEntity<>(
+                        "{ \"Error\": \"Fecha u hora invalidas\" }",
+                        HttpStatus.BAD_REQUEST);
+            }
             return new ResponseEntity<>(
-                    "{ \"Error\": \"Fecha u hora invalidas\" }",
+                    repo.save(
+                            new Turno(
+                                    fechaInicio,
+                                    fechaFin,
+                                    horaInicio,
+                                    horaFin
+                            )),
+                    HttpStatus.CREATED
+            );
+        }catch (IllegalArgumentException e){
+            return new ResponseEntity<>(
+                    "{ \"Error\": \"Formato Fecha u hora invalidas\" }",
                     HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(
-            repo.save(
-                    new Turno(
-                    fechaInicio,
-                    fechaFin,
-                    horaInicio,
-                    horaFin
-                )),
-            HttpStatus.CREATED
-        );
     }
 
     @Override
     public ResponseEntity actualizar(Long id, NuevoTurno nuevoTurno) {
-        Optional<Turno> opt = repo.findById(id);
-        if(!opt.isPresent()){
-            return new ResponseEntity<>("{ \"Error\": \"No hay un turno con ese id\" }", HttpStatus.NOT_FOUND);
-        }
-        Turno turno = opt.get();
-        Date fechaInicio = Date.valueOf(nuevoTurno.getFechaInicio());
-        Date fechaFin = Date.valueOf(nuevoTurno.getFechaFin());
-        Time horaInicio = Time.valueOf(nuevoTurno.getHoraInicio());
-        Time horaFin = Time.valueOf(nuevoTurno.getHoraFin());
-        if(fechaInicio.before(fechaActual) || fechaFin.before(fechaInicio) || horaFin.before(horaInicio)){
+        try {
+            Optional<Turno> opt = repo.findById(id);
+            if (!opt.isPresent()) {
+                return new ResponseEntity<>("{ \"Error\": \"No hay un turno con ese id\" }", HttpStatus.NOT_FOUND);
+            }
+            Turno turno = opt.get();
+            Date fechaInicio = Date.valueOf(nuevoTurno.getFechaInicio());
+            Date fechaFin = Date.valueOf(nuevoTurno.getFechaFin());
+            Time horaInicio = Time.valueOf(nuevoTurno.getHoraInicio());
+            Time horaFin = Time.valueOf(nuevoTurno.getHoraFin());
+            if (fechaInicio.before(fechaActual) || fechaFin.before(fechaInicio) || horaFin.before(horaInicio)) {
+                return new ResponseEntity<>(
+                        "{ \"Error\": \"Fecha u hora inválidas\" }",
+                        HttpStatus.BAD_REQUEST
+                );
+            }
+            turno.setFechaInicio(fechaInicio);
+            turno.setFechaFin(fechaFin);
+            turno.setHoraInicio(horaInicio);
+            turno.setHoraFin(horaFin);
+            return new ResponseEntity<>(repo.save(turno), HttpStatus.OK);
+        }catch (IllegalArgumentException e){
             return new ResponseEntity<>(
-                    "{ \"Error\": \"Fecha u hora inválidas\" }",
+                    "{ \"Error\": \"Formato Fecha u hora inválidas\" }",
                     HttpStatus.BAD_REQUEST
             );
         }
-        turno.setFechaInicio(fechaInicio);
-        turno.setFechaFin(fechaFin);
-        turno.setHoraInicio(horaInicio);
-        turno.setHoraFin(horaFin);
-        return new ResponseEntity<>(repo.save(turno), HttpStatus.OK);
     }
 
     @Override
@@ -116,44 +129,62 @@ public class ServicioTurnoImpl implements ServicioTurno {
 
     @Override
     public ResponseEntity filtrarPorHoraEspecifica(String horaEspecifica) {
-        List<Turno> lista = repo.findTurnoXHoraEspecifica(Time.valueOf(horaEspecifica));
-        if(lista.isEmpty()){
+        try {
+            List<Turno> lista = repo.findTurnoXHoraEspecifica(Time.valueOf(horaEspecifica));
+            if(lista.isEmpty()){
+                return new ResponseEntity<>(
+                        "{ \"mensaje\": \"No se ha hallado un turno\"}",
+                        HttpStatus.NOT_FOUND
+                );
+            }
             return new ResponseEntity<>(
-                    "{ \"mensaje\": \"No se ha hallado un turno\"}",
-                    HttpStatus.NOT_FOUND
+                    lista, HttpStatus.OK
+            );
+        }catch (IllegalArgumentException e){
+            return new ResponseEntity<>(
+                    "{\"mensaje\": \"Formato de hora invalido\"}", HttpStatus.BAD_REQUEST
             );
         }
-        return new ResponseEntity<>(
-                lista, HttpStatus.OK
-        );
     }
 
     @Override
     public ResponseEntity filtrarPorHoraInicio(String horaEspecifica) {
-        List<Turno> lista = repo.findTurnoXHoraDeInicio(Time.valueOf(horaEspecifica));
-        if(lista.isEmpty()){
+        try {
+            List<Turno> lista = repo.findTurnoXHoraDeInicio(Time.valueOf(horaEspecifica));
+            if (lista.isEmpty()) {
+                return new ResponseEntity<>(
+                        "{ \"mensaje\": \"No se ha hallado un turno\"}",
+                        HttpStatus.NOT_FOUND
+                );
+            }
             return new ResponseEntity<>(
-                    "{ \"mensaje\": \"No se ha hallado un turno\"}",
-                    HttpStatus.NOT_FOUND
+                    lista, HttpStatus.OK
+            );
+        }catch (IllegalArgumentException e){
+            return new ResponseEntity<>(
+                    "{\"mensaje\": \"Formato de hora invalido\"}", HttpStatus.BAD_REQUEST
             );
         }
-        return new ResponseEntity<>(
-                lista, HttpStatus.OK
-        );
     }
 
     @Override
     public ResponseEntity filtrarPorHoraFin(String horaEspecifica) {
-        List<Turno> lista = repo.findTurnoXHoraDeFin(Time.valueOf(horaEspecifica));
-        if(lista.isEmpty()){
+        try {
+            List<Turno> lista = repo.findTurnoXHoraDeFin(Time.valueOf(horaEspecifica));
+            if (lista.isEmpty()) {
+                return new ResponseEntity<>(
+                        "{ \"mensaje\": \"No se ha hallado un turno\"}",
+                        HttpStatus.NOT_FOUND
+                );
+            }
             return new ResponseEntity<>(
-                    "{ \"mensaje\": \"No se ha hallado un turno\"}",
-                    HttpStatus.NOT_FOUND
+                    lista, HttpStatus.OK
+            );
+        }catch (IllegalArgumentException e){
+            return new ResponseEntity<>(
+                    "{\"mensaje\": \"Formato de hora invalido\"}", HttpStatus.BAD_REQUEST
             );
         }
-        return new ResponseEntity<>(
-                lista, HttpStatus.OK
-        );
     }
 
 }

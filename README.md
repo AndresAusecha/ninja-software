@@ -146,7 +146,7 @@ curl -X DELETE \
 #### Asignar un turno a un empleado
 ```
 curl -X PUT \
-  http://localhost:8080/logica-negocio/empleado/asignar-turno-a-empleado/id-empleado/4/id-turno/9 \
+  http://localhost:8080/logica-negocio/empleado/asignar-turno-a-empleado/id-empleado/1/id-turno/1 \
   -H 'Postman-Token: 3c72e315-187d-4cf3-857a-f1fb650e6546' \
   -H 'cache-control: no-cache'
 ```
