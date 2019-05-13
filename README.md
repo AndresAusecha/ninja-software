@@ -1,7 +1,7 @@
 Gestión De Turnos Ninja Software
 ================
 
-Tabla of contenidos
+Tabla de contenidos
 ----------------
 
 * Arquitectuta empleada
